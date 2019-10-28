@@ -55,3 +55,11 @@ pub extern "C" fn message_ready() -> usize {
   len
 }
 ```
+
+
+# TODO
+
+[X] library code with WASI fs interface
+[X] basic example
+[ ] documentation
+[ ] CLI for worker setup
