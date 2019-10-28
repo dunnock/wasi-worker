@@ -1,0 +1,52 @@
+{
+  "name": "wasi-worker",
+  "version": "1.0.0",
+  "description": "Service runner for yew worker thread compiled into WASI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"no tests yet\"",
+    "build": "npm run build:prod",
+    "build:prod": "npx rollup -c --environment PROD",
+    "build:dev": "npx rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dunnock/wabench.git"
+  },
+  "keywords": [
+    "wasi",
+    "wasm",
+    "benchmark",
+    "rust",
+    "web3",
+    "performance",
+    "browser",
+    "console"
+  ],
+  "author": "Maxim Vorobjov <maxim.vorobjov@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dunnock/wabench/issues"
+  },
+  "homepage": "https://github.com/dunnock/wabench#readme",
+  "dependencies": {
+    "@wasmer/wasi": "^0.2.0",
+    "@wasmer/wasm-transformer": "^0.2.0",
+    "@wasmer/wasmfs": "^0.2.0"
+  },
+  "devDependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.10.0",
+    "@types/node": "^12.11.2",
+    "install": "^0.13.0",
+    "memfs": "2.15.5",
+    "npm": "^6.12.0",
+    "rollup": "^1.24.0",
+    "rollup-plugin-bundle-size": "^1.0.3",
+    "rollup-plugin-copy": "^3.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.24.3",
+    "tslib": "^1.10.0",
+    "typescript": "^3.6.4"
+  }
+}

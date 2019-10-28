@@ -1,0 +1,23 @@
+{
+  "include": [
+    "src/*"
+    ],
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "es5",
+    "lib": ["esnext", "dom"],
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "downlevelIteration": true,
+    "declarationDir": "dist/types",
+    "outDir": "dist/",
+    "jsx": "react",
+    "jsxFactory": "h",
+    "typeRoots": ["node_modules/@types"],
+    "preserveSymlinks": true
+  }
+}
