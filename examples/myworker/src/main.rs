@@ -3,11 +3,11 @@ use std::thread_local;
 use std::cell::RefCell;
 
 thread_local! {
-  static SERVICE: RefCell<Option<ServiceWorker>> = RefCell::new(None);
+  static SERVICE: RefCell<Option<ServiceWorker<MyAgent>>> = RefCell::new(None);
 }
 
-struct MyWorker {}
-impl Worker for MyWorker {
+struct MyAgent {}
+impl Worker for MyAgent {
   fn on_message(&self, msg: &[u8]) -> std::io::Result<()> {
     // Process incoming message
     println!("My Worker got message: {:?}", msg);
@@ -16,10 +16,10 @@ impl Worker for MyWorker {
 }
 
 fn main() {
-  let worker = MyWorker {};
-  let mut service = ServiceWorker::new()
+  let agent = MyAgent {};
+  let mut service = ServiceWorker::<MyAgent>::new()
     .expect("ServiceWorker::new");
-  service.set_worker(Box::new(worker));
+  service.set_message_handler(agent);
   service.post_message(b"message")
     .expect("ServiceWorker.post_message");
   SERVICE.with(|local| local.replace(Some(service)));
