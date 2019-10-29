@@ -1,12 +1,12 @@
 [package]
 name = "wasi-worker"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
 license = "MIT"
 description = "WASM/WASI interface for browser service workers"
 readme = "README.md"
-keywords = ["cli", "wasi", "wasm", "service worker", "worker"]
+keywords = ["wasi", "wasm", "service worker", "worker"]
 categories = ["web-programming", "webassembly"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

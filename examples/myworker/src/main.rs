@@ -8,16 +8,18 @@ thread_local! {
 
 struct MyWorker {}
 impl Worker for MyWorker {
-  fn on_message(&self, msg: &[u8]) {
+  fn on_message(&self, msg: &[u8]) -> std::io::Result<()> {
     // Process incoming message
     println!("My Worker got message: {:?}", msg);
+    Ok(())
   }
 }
 
 fn main() {
   let worker = MyWorker {};
-  let mut service = ServiceWorker::new(Box::new(worker))
+  let mut service = ServiceWorker::new()
     .expect("ServiceWorker::new");
+  service.set_worker(Box::new(worker));
   service.post_message(b"message")
     .expect("ServiceWorker.post_message");
   SERVICE.with(|local| local.replace(Some(service)));
