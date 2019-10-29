@@ -44,7 +44,6 @@
 //!  }
 //!  ```
 
-
 mod worker;
 mod service;
 
