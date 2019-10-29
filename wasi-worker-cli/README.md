@@ -1,3 +1,4 @@
+Tool to create and deploy WASM WASI-based browser service workers
 
 # Installation
 
