@@ -5,7 +5,7 @@
 //!  use wasi_worker::*;
 //! 
 //!  struct MyWorker {}
-//!  impl Worker for MyWorker {
+//!  impl Handler for MyWorker {
 //!    fn on_message(&self, msg: &[u8]) -> std::io::Result<()> {
 //!      // Process incoming message
 //!      println!("My Worker got message: {:?}", msg);
@@ -14,11 +14,15 @@
 //!  }
 //! 
 //!  fn main() {
-//!    ServiceWorker::initialize(Box::new(MyWorker {}))
+//!    let opt = ServiceOptions{output: FileOptions::File("./testdata/output.bin".to_string())};
+//!    ServiceWorker::initialize(opt)
 //!      .expect("ServiceWorker::initialize");
+//!    ServiceWorker::set_message_handler(Box::new(MyWorker {}))
+//!      .expect("ServiceWorker.set_message_handler");
 //!    ServiceWorker::post_message(b"message")
 //!      .expect("ServiceWorker.post_message");
-//!    message_ready();
+//!    std::fs::remove_file("./testdata/output.bin")
+//!      .expect("Remove ./testdata/output.bin");
 //!  }
 //!  // this function will be called from worker.js when it receives message
 //!  // In the future it will be substituted by poll_oneoff or thread::yield, 

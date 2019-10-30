@@ -80,7 +80,8 @@ impl ServiceWorker {
   /// 
   /// Example usage:
   /// ```
-  /// ServiceWorker::post_message(b"mymesage")
+  /// use wasi_worker::ServiceWorker;
+  /// ServiceWorker::post_message(b"mymesage");
   /// ```
   pub fn post_message(msg: &[u8]) -> std::io::Result<()> {
     SERVICE.with(|service| {
