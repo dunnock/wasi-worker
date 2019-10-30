@@ -10,5 +10,6 @@ fn main() {
   let srzd = serde_json::to_string(&HandlerId(0, true)).unwrap();
   let hdl: YewHandlerId = serde_json::from_str(&srzd).unwrap();
   let msg = ToWorker::<String>::ProcessInput(hdl, "hello".to_string());
-  std::io::stdout().write(&msg.pack());
+  std::io::stdout().write(&msg.pack())
+    .expect("Write to stdout");
 }

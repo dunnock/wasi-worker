@@ -2,7 +2,8 @@
 
 //! Yew worker compilable to wasm32-wasi target. It should provide about 2x better 
 //! performance than wasm32-unknown target.
-//! It is experimental implementation, uses customized fork of yew until PR  accepted
+//! It is experimental implementation, uses customized fork of yew 
+//! until PR https://github.com/yewstack/yew/pull/719  accepted
 
 use yew::agent::*;
 use std::io;
@@ -57,11 +58,10 @@ pub trait ThreadedWASI {
 impl<T: Agent<Reach = Public>> ThreadedWASI for WASIAgent<T>
 {
     fn run(&self) -> io::Result<()> {
-        let scope = AgentScope::<T>::new();
         let responder = WASIResponder { };
-        let link = AgentLink::connect(&scope, responder);
+        let link = AgentLink::connect(&self.scope, responder);
         let upd = AgentUpdate::Create(link);
-        scope.send(upd);
+        self.scope.send(upd);
         let loaded: FromWorker<T::Output> = FromWorker::WorkerLoaded;
         let loaded = loaded.pack();
         ServiceWorker::post_message(&loaded)

@@ -1,6 +1,6 @@
 use wasi_worker_yew::{ThreadedWASI, WASIAgent};
 use yew::agent::{Agent, AgentLink, Public, HandlerId};
-use wasi_worker::{ServiceWorker, ServiceOptions};
+use wasi_worker::{ServiceWorker, ServiceOptions, FileOptions};
 
 struct MyAgent {
   link: AgentLink<Self>
@@ -27,7 +27,8 @@ impl Agent for MyAgent {
 }
 
 fn main() {
-  ServiceWorker::initialize(ServiceOptions::default())
+  let opt = ServiceOptions { output: FileOptions::File("./tmp/output.bin".to_string()) };
+  ServiceWorker::initialize(opt)
     .expect("ServiceWorker created");
   let agent = WASIAgent::<MyAgent>::new();
   agent.run().expect("Agent run");
@@ -36,6 +37,8 @@ fn main() {
   ServiceWorker::post_message(b"message")
     .expect("ServiceWorker.post_message");
   message_ready();
+  std::fs::remove_file("./tmp/output.bin")
+    .expect("Remove ./tmp/output.bin");
 }
 
 // this function will be called from worker.js when it receives message
