@@ -32,6 +32,25 @@ mod service;
 
 pub use service::{ServiceWorker, Handler};
 
+pub enum FileOptions {
+  Default,
+  File(String)
+}
+
+pub struct ServiceOptions {
+// TODO:  input: FileOptions,
+  pub output: FileOptions,
+}
+
+impl Default for ServiceOptions {
+  fn default() -> Self {
+    Self {
+      output: FileOptions::Default
+    }
+  }
+}
+
+
 #[cfg(test)]
 mod tests {
     #[test]
