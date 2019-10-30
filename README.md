@@ -73,7 +73,6 @@ impl Handler for MyWorker {
 }
 
 fn main() {
-  
   // In WASI setup output will go to /output.bin
   #[cfg(target_os="wasi")]
   let opt = ServiceOptions::default();
@@ -89,8 +88,7 @@ fn main() {
     .expect("ServiceWorker::initialize");
 
   // Attach Agent to ServiceWorker as message handler singleton
-  ServiceWorker::set_message_handler(Box::new(MyWorker {}))
-    .expect("ServiceWorker::set_message_handler");
+  ServiceWorker::set_message_handler(Box::new(MyWorker {}));
 
   // Send binary message to main browser application
   // this requires JS glue see wasi-worker-cli

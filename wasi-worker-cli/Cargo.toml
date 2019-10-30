@@ -1,6 +1,6 @@
 [package]
 name = "wasi-worker-cli"
-version = "0.1.2"
+version = "0.2.0"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -20,3 +20,4 @@ path = "src/main.rs"
 [dependencies]
 structopt = "0.3"
 wasi-worker = { version = "0.3", path = ".." }
+toml_edit = "0.1"
