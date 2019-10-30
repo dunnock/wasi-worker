@@ -8,6 +8,7 @@ description = "Tool to create and deploy WASM WASI-based browser service workers
 readme = "README.md"
 keywords = ["cli", "install", "wasi", "wasm", "worker"]
 categories = ["command-line-utilities", "wasm", "web-programming"]
+repository = "https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli"
 
 [[bin]]
 name = "wasiworker"
@@ -17,4 +18,4 @@ path = "src/main.rs"
 
 [dependencies]
 structopt = "0.3"
-wasi-worker = { path = ".." }
+wasi-worker = { version = "0.3", path = ".." }

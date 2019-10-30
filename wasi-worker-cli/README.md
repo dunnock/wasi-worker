@@ -8,14 +8,6 @@ cargo install wasi-worker-cli
 
 # Usage
 
-## Install wasiworker template considering current directory is a crate root
-
-```
-wasiworker install
-```
-
-It will create `bin/worker.rs` and place relevant target and dependencies in current `Cargo.toml`. Will panic if Cargo.toml was not found.
-
 ## Build and deploy `worker` under ./dist with all depencies
 
 ```
@@ -24,8 +16,16 @@ wasiworker deploy
 
 It will run `cargo build --release --target wasm32-wasi --bin worker`, then it will take resulting wasm file and optimize it with
 
+## Install wasiworker template considering current directory is a crate root
 
-# Building/hacking/contirubintg/debugging
+```
+wasiworker install
+```
+
+It will create `bin/worker.rs` and place relevant target and dependencies in current `Cargo.toml`. Will panic if Cargo.toml was not found.
+
+
+# Acknowledgements
 
 JavaScript glue code is built on top of following great packages. Thanks https://wasmer.io/ for their great work on making WASI easy to use.
 

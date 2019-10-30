@@ -47,15 +47,15 @@ pub extern "C" fn message_ready() -> usize {
 
 Is provided with [wasiworker](https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli) tool which can be installed cargo:
 ```
-cargo install wasiworker
+cargo install wasi-worker-cli
 ```
 
-`wasiworker` will build `worker` bin target and deploy it with JS glue code under `./dist`:
+`wasiworker deploy` will build `worker` bin target and deploy it with JS glue code under `./dist`:
 ```
 wasiworker deploy
 ```
 
-[JS glue code source code](https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli/js) can be located in the same repository.
+For hacking [JS glue code source code](https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli/js) is located in the same repository.
 
 
 # More detailed example
