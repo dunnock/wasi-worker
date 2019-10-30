@@ -17,8 +17,7 @@
 //!    let opt = ServiceOptions{output: FileOptions::File("./testdata/output.bin".to_string())};
 //!    ServiceWorker::initialize(opt)
 //!      .expect("ServiceWorker::initialize");
-//!    ServiceWorker::set_message_handler(Box::new(MyWorker {}))
-//!      .expect("ServiceWorker.set_message_handler");
+//!    ServiceWorker::set_message_handler(Box::new(MyWorker {}));
 //!    ServiceWorker::post_message(b"message")
 //!      .expect("ServiceWorker.post_message");
 //!    std::fs::remove_file("./testdata/output.bin")

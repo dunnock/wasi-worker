@@ -1,4 +1,4 @@
 /target
 **/*.rs.bk
 Cargo.lock
-/tmp/output.bin
+/testdata/output.bin

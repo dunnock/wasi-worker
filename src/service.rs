@@ -11,7 +11,6 @@ use super::{ServiceOptions, FileOptions};
 pub struct ServiceWorker {
   output: File,
   input: io::Stdin,
-  handler: Option<Box<dyn Handler>>
 }
 
 /// Handler for incoming messages via ServiceWorker
@@ -21,6 +20,7 @@ pub trait Handler {
 
 thread_local! {
   static SERVICE: RefCell<Option<ServiceWorker>> = RefCell::new(None);
+  static HANDLER: RefCell<Option<Box<dyn Handler>>> = RefCell::new(None);
 }
 
 impl ServiceWorker {
@@ -36,8 +36,7 @@ impl ServiceWorker {
     };
     let sw = ServiceWorker {
       output,
-      input: io::stdin(),
-      handler: None
+      input: io::stdin()
     };
     SERVICE.with(|service| service.replace(Some(sw)));
     Ok(())
@@ -45,33 +44,29 @@ impl ServiceWorker {
 
   /// Message handler is required to process incoming messages. 
   /// Please note, there is no queue therefore messages received before handler initialized will be lost.
-  pub fn set_message_handler(handler: Box<dyn Handler>) -> io::Result<()> {
-    SERVICE.with(|service| {
-      if let Some(sw) = &mut *service.borrow_mut() {
-        sw.handler = Some(handler);
-        Ok(())
-      } else {
-        Err(io::Error::new(io::ErrorKind::NotConnected, "Service was not initialized"))
-      }
-    })
+  pub fn set_message_handler(new_handler: Box<dyn Handler>) {
+    HANDLER.with(|handler| handler.replace(Some(new_handler)));
   }
 
   /// This method is a trigger 
   /// This is workaround while we don't have wasi::poll_oneoff, 
   /// ideally we shall just poll and wait for FD_READ event.
   pub fn on_message() -> io::Result<usize> {
-    SERVICE.with(|service| {
-      if let Some(sw) = &mut *service.borrow_mut() {
-        if let Some(handler) = &sw.handler {
-          let mut buf: [u8; 1000] = [0; 1000];
-          let len = sw.input.read(&mut buf)?;
-          handler.on_message(&buf[0..len])?;
-          Ok(len)
+    let mut buf: [u8; 1000] = [0; 1000];
+    let len = 
+      SERVICE.with(|service| {
+        if let Some(sw) = &mut *service.borrow_mut() {
+          sw.input.read(&mut buf)
         } else {
-          Err(io::Error::new(io::ErrorKind::NotConnected, "Worker was not initialized"))
+          Err(io::Error::new(io::ErrorKind::ConnectionRefused, "Cannot borrow service mutably"))
         }
+      })?;
+    HANDLER.with(|handler| {
+      if let Some(handler) = &*handler.borrow() {
+        handler.on_message(&buf[0..len])?;
+        Ok(len)
       } else {
-        Err(io::Error::new(io::ErrorKind::NotConnected, "Service was not initialized"))
+        Err(io::Error::new(io::ErrorKind::NotConnected, "Worker was not initialized"))
       }
     })
   }

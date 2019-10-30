@@ -20,25 +20,36 @@ impl Agent for MyAgent {
   fn update(&mut self, _msg: Self::Message) { /* ... */ }
 
   // Handle incoming messages from components of other agents.
-  fn handle(&mut self, msg: Self::Input, _who: HandlerId) {
-    println!("Got message: {}", msg);
-    //self.link.response(who, msg);
+  fn handle(&mut self, msg: Self::Input, who: HandlerId) {
+    println!("Got incoming message: {}", msg);
+    self.link.response(who, msg);
   }
 }
 
 fn main() {
-  let opt = ServiceOptions { output: FileOptions::File("./tmp/output.bin".to_string()) };
+  // In usual WASI setup with JS glue all output will be posted to /output.bin
+  // Though in user filesystem to be able to run from shell we operate under current dir
+  let opt = ServiceOptions { output: FileOptions::File("./testdata/output.bin".to_string()) };
   ServiceWorker::initialize(opt)
     .expect("ServiceWorker created");
+
+  // Following will create and initialize Agent
   let agent = WASIAgent::<MyAgent>::new();
+  // It will run ThreadedWASI::run() to start Agent in WASI compatible context
   agent.run().expect("Agent run");
-  ServiceWorker::set_message_handler(Box::new(agent))
-    .expect("ServiceWorker set_message_handler");
+  // Attach Agent to ServiceWorker as message handler singleton
+  ServiceWorker::set_message_handler(Box::new(agent));
   ServiceWorker::post_message(b"message")
     .expect("ServiceWorker.post_message");
+
+  // Supposedly we also received "hello" via stdin (see ./run.sh)
+  // If that is the case output.bin and output.bin.snapshot will match
   message_ready();
-  std::fs::remove_file("./tmp/output.bin")
-    .expect("Remove ./tmp/output.bin");
+  let output_dump = std::fs::read("./testdata/output.bin").unwrap();
+  println!("Outgoing file content {:?}", String::from_utf8(output_dump.clone()));
+  assert_eq!(output_dump, std::fs::read("./testdata/output.bin.snapshot").unwrap());
+  std::fs::remove_file("./testdata/output.bin")
+    .expect("Remove ./testdata/output.bin");
 }
 
 // this function will be called from worker.js when it receives message
