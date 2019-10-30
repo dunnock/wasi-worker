@@ -12,10 +12,9 @@ WASM code which executes as part of web application occupies same javascript thr
 
 As it stated before code compiled to WASI seems to run about 2 times faster (link to benchmark). The only problem is that WASI is not built to be executed from browser, rather it is standard which aims to run WASM code on server side, hence it is missing proper JavaScript bindings. Thankfully to beautiful [wasmer-js](https://github.com/wasmerio/wasmer-js) this crate provides browser service worker WASI runtime as well as communication bridge to/from web application.
 
-# Short example
+# Usage example
 
-This example requires JavaScript glue code or WASI environment
-with properly preconfigured filesystem
+This example to operate requires [JavaScript glue code](https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli) or [WASI environment](https://github.com/dunnock/wasi-worker/tree/master/examples/myworker) with properly preconfigured filesystem
 
 ```rust
 use wasi_worker::*;
@@ -46,13 +45,12 @@ pub extern "C" fn message_ready() -> usize {
 
 # JavaScript glue code
 
-Is provided with (wasiworker)[https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli] tool which can be installed cargo:
+Is provided with [wasiworker](https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli) tool which can be installed cargo:
 ```
 cargo install wasiworker
 ```
 
-`wasiworker` will build `worker` bin target and deploy it 
-with JS glue code under `./dist`:
+`wasiworker` will build `worker` bin target and deploy it with JS glue code under `./dist`:
 ```
 wasiworker deploy
 ```
