@@ -1,12 +1,6 @@
-use wasi_worker_yew::{ThreadedWASI, WASIAgent, ServiceWorker};
+use wasi_worker_yew::{ThreadedWASI, WASIAgent};
 use yew::agent::{Agent, AgentLink, Public, HandlerId};
-use std::thread_local;
-use std::cell::RefCell;
-use std::rc::Rc;
-
-thread_local! {
-  static SERVICE: RefCell<Option<Rc<RefCell<ServiceWorker<WASIAgent<MyAgent>>>>>> = RefCell::new(None);
-}
+use wasi_worker::{ServiceWorker, ServiceOptions};
 
 struct MyAgent {
   link: AgentLink<Self>
@@ -26,22 +20,21 @@ impl Agent for MyAgent {
   fn update(&mut self, _msg: Self::Message) { /* ... */ }
 
   // Handle incoming messages from components of other agents.
-  fn handle(&mut self, msg: Self::Input, who: HandlerId) {
-    self.link.response(who, msg);
+  fn handle(&mut self, msg: Self::Input, _who: HandlerId) {
+    println!("Got message: {}", msg);
+    //self.link.response(who, msg);
   }
 }
 
 fn main() {
-  let _worker = ServiceWorker::<WASIAgent<MyAgent>>::new()
+  ServiceWorker::initialize(ServiceOptions::default())
     .expect("ServiceWorker created");
-  let worker = Rc::new(RefCell::new(_worker));
-  let agent = WASIAgent::<MyAgent>::new(worker.clone());
+  let agent = WASIAgent::<MyAgent>::new();
   agent.run().expect("Agent run");
-  worker.borrow_mut().set_message_handler(agent);
-
-  worker.borrow_mut().post_message(b"message")
+  ServiceWorker::set_message_handler(Box::new(agent))
+    .expect("ServiceWorker set_message_handler");
+  ServiceWorker::post_message(b"message")
     .expect("ServiceWorker.post_message");
-  SERVICE.with(|local| local.replace(Some(worker.clone())));
   message_ready();
 }
 
@@ -49,15 +42,6 @@ fn main() {
 // In the future it will be substituted by poll_oneoff or thread::yield, 
 // though currently poll_oneoff does not return control to browser
 pub extern "C" fn message_ready() -> usize {
-  let mut len: usize = 0;
-  SERVICE.with(move |local| {
-    let opt = &mut *local.borrow_mut();
-    if let Some(service) = opt {
-      len = service.borrow_mut().on_message()
-        .expect("ServiceWorker.on_message")
-    } else {
-      panic!("Service not initialized");
-    }
-  });
-  len
+  ServiceWorker::on_message()
+    .expect("ServiceWorker.on_message")
 }

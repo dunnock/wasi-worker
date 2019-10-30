@@ -16,6 +16,7 @@ path = "src/main.rs"
 
 [dependencies]
 wasi-worker-yew = { path="../../wasi-worker-yew" }
+wasi-worker = { path="../.." }
 yew = { git = "https://github.com/dunnock/yew" }
 serde_json = "1.0"
 serde = "1.0"
