@@ -3,9 +3,15 @@ use std::fs::File;
 use std::cell::RefCell;
 use super::{ServiceOptions, FileOptions};
 
-/// Connects Rust Worker with browser service worker via WASI filesystem.
-/// ServiceWorker is singleton, can operate only in single threaded environment
-/// which is fine when it's run as browser service worker.
+/// Connects Rust Handler with browser service worker via WASI filesystem.
+/// 
+/// ServiceWorker is a singleton which holds input and output file handles and
+/// owns woker via Handler trait. Worker is supposedly reactive, usually operating
+/// on incoming events (on_message) and posting messages to main browser application
+/// via ServiceWorker::post_message().
+/// 
+/// Note: ServiceWorker supposed to operate in single threaded environment
+/// like a browser service worker.
 ///
 /// TODO: it requires cleaning of filesystem, add drop implementation
 pub struct ServiceWorker {
@@ -24,16 +30,11 @@ thread_local! {
 }
 
 impl ServiceWorker {
-  pub const OUTFILE: &'static str = "/output.bin";
-
   /// Initialize ServiceWorker instance.
   /// ServiceWorker operates as singleton, all struct methods are static.
   /// Unless initialized all methods will result in error io::ErrorKind::NotConnected.
   pub fn initialize(opt: ServiceOptions) -> io::Result<()> {
-    let output = match opt.output {
-      FileOptions::Default => File::create(Self::OUTFILE)?,
-      FileOptions::File(path) => File::create(path)?,
-    };
+    let output = match opt.output { FileOptions::File(path) => File::create(path)? };
     let sw = ServiceWorker {
       output,
       input: io::stdin()

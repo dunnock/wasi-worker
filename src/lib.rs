@@ -1,6 +1,13 @@
-//!  This crate provides rust library and JS glue code to compose service worker
+//!  This crate provides rust library to easily compose WASM/WASI browser service worker.
 //!  
-//!  Example usage:
+//!  # General overview
+//! 
+//!  ServiceWorker is a singleton which holds input and output file handles and
+//!  owns worker via Handler trait. Worker is supposedly reactive, usually operating
+//!  on incoming events (on_message) and posting messages to main browser application
+//!  via ServiceWorker::post_message().
+//! 
+//!  # Example usage:
 //!  ```
 //!  use wasi_worker::*;
 //! 
@@ -14,15 +21,27 @@
 //!  }
 //! 
 //!  fn main() {
-//!    let opt = ServiceOptions{output: FileOptions::File("./testdata/output.bin".to_string())};
+//!    // In usual WASI setup with JS glue all output will be posted to /output.bin
+//!    // Though in user filesystem to be able to run from shell we operate under current dir
+//!    #[cfg(target_os="wasi")]
+//!    let opt = ServiceOptions::default();
+//!    #[cfg(not(target_os="wasi"))]
+//!    let opt = ServiceOptions { output: FileOptions::File("./testdata/output.bin".to_string()) };
+//!    let output_file = match &opt.output { FileOptions::File(path) => path.clone() };
 //!    ServiceWorker::initialize(opt)
 //!      .expect("ServiceWorker::initialize");
+//! 
+//!    // Attach Agent to ServiceWorker as message handler singleton
 //!    ServiceWorker::set_message_handler(Box::new(MyWorker {}));
+//! 
+//!    // Send binary message to main browser application
 //!    ServiceWorker::post_message(b"message")
 //!      .expect("ServiceWorker.post_message");
-//!    std::fs::remove_file("./testdata/output.bin")
+//!    // It still requires cleanup (TODO impl Drop)
+//!    std::fs::remove_file(output_file)
 //!      .expect("Remove ./testdata/output.bin");
 //!  }
+//! 
 //!  // this function will be called from worker.js when it receives message
 //!  // In the future it will be substituted by poll_oneoff or thread::yield, 
 //!  // though currently poll_oneoff does not return control to browser
@@ -35,11 +54,12 @@ mod service;
 
 pub use service::{ServiceWorker, Handler};
 
+/// Instructs on file descriptor configuration for ServiceWorker
 pub enum FileOptions {
-  Default,
   File(String)
 }
 
+/// Options for ServiceWorker
 pub struct ServiceOptions {
 // TODO:  input: FileOptions,
   pub output: FileOptions,
@@ -48,7 +68,7 @@ pub struct ServiceOptions {
 impl Default for ServiceOptions {
   fn default() -> Self {
     Self {
-      output: FileOptions::Default
+      output: FileOptions::File("/output.bin".to_string())
     }
   }
 }
