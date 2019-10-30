@@ -1,2 +1,2 @@
-cargo build --debug --target wasm32-wasi
-wasmtime target/wasm32-wasi/debug/sendmessage.wasm | wasmtime --mapdir=/::./tmp target/wasm32-wasi/debug/main.wasm
+cargo build --target wasm32-wasi
+wasmtime target/wasm32-wasi/debug/sendmessage.wasm | wasmtime --mapdir=.::. target/wasm32-wasi/debug/main.wasm

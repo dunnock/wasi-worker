@@ -12,8 +12,7 @@ impl Handler for MyAgent {
 fn main() {
   ServiceWorker::initialize(ServiceOptions::default())
     .expect("ServiceWorker::initialize");
-  ServiceWorker::set_message_handler(Box::new(MyAgent {}))
-    .expect("ServiceWorker::set_message_handler");
+  ServiceWorker::set_message_handler(Box::new(MyAgent {}));
   ServiceWorker::post_message(b"message")
     .expect("ServiceWorker::post_message");
   message_ready();
