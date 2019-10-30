@@ -7,7 +7,7 @@ license = "MIT"
 description = "Tool to create and deploy WASM WASI-based browser service workers"
 readme = "README.md"
 keywords = ["cli", "install", "wasi", "wasm", "worker"]
-categories = ["command-line-utilities", "webassembly", "web-programming"]
+categories = ["command-line-utilities", "wasm", "web-programming"]
 
 [[bin]]
 name = "wasiworker"
