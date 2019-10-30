@@ -7,9 +7,9 @@ use std::process::{Command, Stdio};
 /// Install JavaScript glue code and WASI toolset for WASI worker to function.
 #[derive(Debug, StructOpt)]
 enum Cli {
-    /// Install static files
+    /// Not working yet: install static files and worker.rs template in current crate
     Install,
-    /// Build and deploy
+    /// Build with `--bin worker` and deploy with glue code under ./dist
     Deploy,
 }
 
@@ -49,6 +49,7 @@ fn build_worker() -> io::Result<()> {
     let mut cmd = Command::new("cargo");
     cmd.args(&[
         "build",
+        "--bin=worker",
         "--release",
         "--target=wasm32-wasi",
     ])
