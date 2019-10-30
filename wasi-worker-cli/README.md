@@ -62,13 +62,13 @@ npm run build
 
 # TODO
 
- [X] CLI
- [X] JavaScript glue package
- [X] Embed JavaScript dist into package
- [X] Documentation
- [ ] Cargo build script to pack and install release or debug version, including building js dependencies
- [ ] Add wasm-gc to optimize resulting wasm size
- [ ] CLI install
- [ ] CLI install allows to customize worker name
- [X] CLI deploy release only
- [ ] CLI deploy can compile for debug
+- [X] CLI
+- [X] JavaScript glue package
+- [X] Embed JavaScript dist into package
+- [X] Documentation
+- [ ] Cargo build script to pack and install release or debug version, including building js dependencies
+- [ ] Add wasm-gc to optimize resulting wasm size
+- [ ] CLI install
+- [ ] CLI install allows to customize worker name
+- [X] CLI deploy release only
+- [ ] CLI deploy can compile for debug

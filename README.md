@@ -115,7 +115,7 @@ pub extern "C" fn message_ready() -> usize {
 
 # TODO
 
- [X] library code with WASI fs interface
- [X] basic example
- [X] documentation
- [ ] CLI for worker setup
+- [X] library code with WASI fs interface
+- [X] basic example
+- [X] documentation
+- [ ] CLI for worker setup
