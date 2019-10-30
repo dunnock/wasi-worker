@@ -34,7 +34,7 @@ SUBCOMMANDS:
 wasiworker deploy
 ```
 
-It will run `cargo build --release --target wasm32-wasi --bin worker`, then it will take resulting wasm file and optimize it with
+It will run `cargo build --release --target wasm32-wasi --bin worker`, copy resulting worker.wasm under ./dist and copy JavaScript glue code under ./dist/worker.js. It will also add [wasm_transformer](https://github.com/wasmerio/wasmer-js/tree/master/packages/wasm-transformer) to be able to run in browser.
 
 2. Install wasiworker template considering current directory is a crate root
 
@@ -80,7 +80,7 @@ JavaScript glue code is built on top of following great packages. Thanks https:/
 
  - [@wasmer-js/wasi](https://github.com/wasmerio/wasmer-js/tree/master/packages/wasi)
  - [@wasmer-js/wasmfs](https://github.com/wasmerio/wasmer-js/tree/master/packages/wasmfs)
- - [@wasmer-js/](https://github.com/wasmerio/wasmer-js/tree/master/packages/wasm-transformer)
+ - [@wasmer-js/wasm-transformer](https://github.com/wasmerio/wasmer-js/tree/master/packages/wasm-transformer)
 
 # TODO
 
