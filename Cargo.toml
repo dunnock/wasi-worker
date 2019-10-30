@@ -8,5 +8,6 @@ description = "WASM/WASI interface for browser service workers"
 readme = "README.md"
 keywords = ["wasi", "wasm", "browser", "service", "worker"]
 categories = ["web-programming", "wasm"]
+repository = "https://github.com/dunnock/wasi-worker"
 
 [dependencies]
