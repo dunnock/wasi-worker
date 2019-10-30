@@ -6,7 +6,7 @@ edition = "2018"
 license = "MIT"
 description = "WASM/WASI browser service worker for yew (Agent<Reach=Public>)"
 readme = "README.md"
-keywords = ["wasi", "wasm", "browser", "yew", "service worker", "worker"]
+keywords = ["wasi", "wasm", "worker", "yew", "agent"]
 categories = ["web-programming", "webassembly"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
