@@ -1,39 +1,46 @@
 #![feature(trait_alias)]
 
-//! Worker compilable to wasm32-wasi target
-/*  This is copy-paste from https://github.com/yewstack/yew/blob/master/src/agent.rs 
-    as a PoC for compilation purpose. */
+//! Yew worker compilable to wasm32-wasi target. It should provide about 2x better 
+//! performance than wasm32-unknown target.
+//! It is experimental implementation, uses customized fork of yew until PR  accepted
 
-use yew::agent::{Agent, HandlerId, AgentScope, AgentLink, AgentUpdate, Responder, Public, FromWorker, ToWorker, Packed};
+use yew::agent::*;
 use std::io;
-use std::rc::Rc;
-use std::cell::RefCell;
-pub use wasi_worker::{Worker, ServiceWorker};
-
-
-pub trait PublicAgent = Agent<Reach = Public>;
+use wasi_worker::{Handler, ServiceWorker};
 
 
 /// WASIAgent is the main executor and communication bridge for yew Agent with Reach = Public
 /// 
 /// Example usage:
 /// ```
-/// use wasi_worker_yew::{ThreadedWASI, WASIAgent, ServiceWorker}
+/// use wasi_worker_yew::{ThreadedWASI, WASIAgent};
+/// use yew::agent::*;
+/// use wasi_worker::{FileOptions, ServiceOptions, ServiceWorker};
 /// 
-/// let worker = Rc::new(RefCell::new(ServiceWorker::new()));
-/// let agent = WASIAgent::new(MyAgent::new(), worker.clone());
-/// worker.on_message(|msg| agent.on_message(msg));
+/// struct MyAgent;
+/// impl Agent for MyAgent {
+///     type Reach = Public;
+///     type Message = String;
+///     type Input = String;
+///     type Output = String;
+///     fn create(_link: AgentLink<Self>) -> Self { MyAgent { } }
+///     fn update(&mut self, _msg: Self::Message) { /* ... */ }
+///     fn handle(&mut self, _msg: Self::Input, _who: HandlerId) { /* */ }
+/// };
+/// 
+/// let opt = ServiceOptions{output: FileOptions::File("./testdata/outputdoc.bin".to_string())};
+/// ServiceWorker::initialize(opt);
+/// ServiceWorker::set_message_handler(Box::new(WASIAgent::<MyAgent>::new()));
+/// std::fs::remove_file("./testdata/outputdoc.bin");
 /// ```
-pub struct WASIAgent<T: PublicAgent> {
-    scope: AgentScope<T>,
-    worker: Rc<RefCell<ServiceWorker<WASIAgent<T>>>>
+pub struct WASIAgent<T: Agent<Reach = Public>> {
+    scope: AgentScope<T>
 }
 
-impl<T: PublicAgent> WASIAgent<T> {
-    pub fn new(worker: Rc<RefCell<ServiceWorker<WASIAgent<T>>>>) -> Self {
+impl<T: Agent<Reach = Public>> WASIAgent<T> {
+    pub fn new() -> Self {
         Self {
-            scope: AgentScope::<T>::new(),
-            worker
+            scope: AgentScope::<T>::new()
         }
     }
 }
@@ -47,25 +54,21 @@ pub trait ThreadedWASI {
 }
 
 
-impl<T: PublicAgent> ThreadedWASI for WASIAgent<T>
+impl<T: Agent<Reach = Public>> ThreadedWASI for WASIAgent<T>
 {
     fn run(&self) -> io::Result<()> {
         let scope = AgentScope::<T>::new();
-        let responder = WASIResponder { worker: self.worker.clone() };
+        let responder = WASIResponder { };
         let link = AgentLink::connect(&scope, responder);
         let upd = AgentUpdate::Create(link);
         scope.send(upd);
         let loaded: FromWorker<T::Output> = FromWorker::WorkerLoaded;
         let loaded = loaded.pack();
-        if let Ok(mut worker) = self.worker.try_borrow_mut() {
-            worker.post_message(&loaded)
-        } else {
-            Err(io::Error::new(io::ErrorKind::WouldBlock, "Service worker was busy"))
-        }
+        ServiceWorker::post_message(&loaded)
     }
 }
 
-impl<T: PublicAgent> Worker for WASIAgent<T>
+impl<T: Agent<Reach = Public>> Handler for WASIAgent<T>
 {
     fn on_message(&self, data: &[u8]) -> io::Result<()> {
         let msg = ToWorker::<T::Input>::unpack(&data);
@@ -92,23 +95,20 @@ impl<T: PublicAgent> Worker for WASIAgent<T>
     }
 }
 
-struct WASIResponder<T: PublicAgent> {
-    worker: Rc<RefCell<ServiceWorker<WASIAgent<T>>>>
+struct WASIResponder {
 }
 
-/// Sending message from worker via ServiceWorker channel
-impl<T: PublicAgent> Responder<T> for WASIResponder<T>
+// Sending message from worker via ServiceWorker channel
+// 
+// In case of sending message failed it will place error to stderr, which should print to console.
+impl<T: Agent<Reach = Public>> Responder<T> for WASIResponder
 {
     fn response(&self, id: HandlerId, output: T::Output) {
         let msg = FromWorker::ProcessOutput(id, output);
         let data = msg.pack();
-        if let Ok(mut worker) = self.worker.try_borrow_mut() {
-            if let Err(err) = worker.post_message(&data) {
-                eprintln!("Worker failed to send message: {:?}", err);    
-            };
-        } else {
-            eprintln!("Worker failed to send message - worker was busy!");
-        }
+        if let Err(err) = ServiceWorker::post_message(&data) {
+            eprintln!("Worker failed to send message: {:?}", err);    
+        };
     }
 }
 
@@ -116,8 +116,37 @@ impl<T: PublicAgent> Responder<T> for WASIResponder<T>
 
 #[cfg(test)]
 mod tests {
+    use yew::agent::*;
+    use super::*;
+    use wasi_worker::{FileOptions, ServiceOptions};
+
+
+    struct MyAgent;
+    impl Agent for MyAgent {
+        type Reach = Public;
+        type Message = String;
+        type Input = String;
+        type Output = String;
+        fn create(_link: AgentLink<Self>) -> Self { MyAgent { } }
+        fn update(&mut self, _msg: Self::Message) { /* ... */ }
+        fn handle(&mut self, _msg: Self::Input, _who: HandlerId) { /* */ }
+    }
+
+
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        let opt = ServiceOptions{output: FileOptions::File("./testdata/output.bin".to_string())};
+        ServiceWorker::initialize(opt)
+            .expect("ServiceWorker::initialize");
+        ServiceWorker::set_message_handler(Box::new(WASIAgent::<MyAgent>::new()))
+            .expect("ServiceWorker::set_message_handler");
+        let message = b"check";
+        ServiceWorker::post_message(message)
+            .expect("ServiceWorker::post_message");
+        let data = std::fs::read("./testdata/output.bin")
+            .expect("Read testdata/output.bin");
+        assert_eq!(data, message);
+        std::fs::remove_file("./testdata/output.bin")
+            .expect("Remove testdata/output.bin");
     }
 }
