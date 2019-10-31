@@ -17,7 +17,9 @@ const WORKER_TABLE: impl Fn() -> Table = || {
 
 const WASI_WORKER_VERSION: &str = "0.3";
 
-/// Install JavaScript glue code and WASI toolset for WASI worker to function.
+/// Install JavaScript glue code and WASM toolset for wasi-worker browser worker to function.
+/// 
+/// Details https://crates.io/crates/wasi-worker
 #[derive(Debug, StructOpt)]
 enum Cli {
     /// Install static files and worker.rs template in current crate. 
