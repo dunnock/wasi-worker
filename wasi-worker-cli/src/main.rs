@@ -131,3 +131,40 @@ fn main() {
         .expect("command failed");
 }
 
+
+#[cfg(test)]
+mod test {
+    use super::Cli;
+    use std::fs;
+    use fs_extra::dir::*;
+    use std::env::set_current_dir;
+
+    struct Unwind;
+    impl Drop for Unwind {
+        fn drop(&mut self) {
+            remove("./testdata/tmp")
+                .expect("remove testdata/tmp");
+        }
+    }
+
+    #[test]
+    fn test_install() {
+        let _testdata = Unwind;
+        // setup test data
+        let mut options = CopyOptions::new();
+        options.copy_inside = false;
+        fs::create_dir("testdata/tmp")
+            .expect("setup project in testdata/tmp/testcli");
+        copy("testdata/testcli/", "testdata/tmp", &options)
+            .expect("setup project in testdata/tmp/testcli");
+        set_current_dir("./testdata/tmp/testcli")
+            .expect("change dir to testdata/tmp/testcli");
+        // run install
+        Cli::Install.exec()
+            .expect("run `wasiworker install` on testdata/tmp/testcli");
+        // compare with snapshot
+        set_current_dir("../../..")
+            .expect("change dir to ../../..");
+        assert!(!dir_diff::is_different("./testdata/testcli.snapshot", "./testdata/tmp/testcli").unwrap());
+    }
+}
