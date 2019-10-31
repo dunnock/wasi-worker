@@ -1,4 +1,6 @@
 [package]
+version = "0.2.2"
+name = "wasi-worker-cli"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 categories = [
     "command-line-utilities",
@@ -16,10 +18,8 @@ keywords = [
     "worker",
 ]
 license = "MIT"
-name = "wasi-worker-cli"
 readme = "README.md"
 repository = "https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli"
-version = "0.2.1"
 
 [[bin]]
 name = "wasiworker"
@@ -28,10 +28,6 @@ path = "src/main.rs"
 [dependencies]
 structopt = "0.3"
 toml_edit = "0.1"
-
-[dependencies.wasi-worker]
-path = ".."
-version = "0.3"
 
 [dev-dependencies]
 fs_extra = "1.1"

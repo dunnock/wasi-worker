@@ -2,3 +2,10 @@
 //! 
 //! This tool provides JavaScript glue for browser service workers built with [wasi-worker](https://crates.io/crates/wasi-worker) library.
 //! [More details](https://crates.io/crates/wasi-worker-cli)
+//! 
+
+mod cli;
+#[cfg(test)]
+mod test;
+
+pub use cli::Cli;
