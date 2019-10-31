@@ -1,6 +1,3 @@
-#![feature(option_result_contains)]
-#![feature(impl_trait_in_bindings)]
-
 use structopt::StructOpt;
 use std::fs;
 use std::io;
@@ -8,12 +5,12 @@ use std::path::Path;
 use std::process::{Command, Stdio};
 use toml_edit::{Document, value, Item, Table, array};
 
-const WORKER_TABLE: impl Fn() -> Table = || {
-            let mut table = Table::new();
-            table["name"] = value("worker");
-            table["path"] = value("src/bin/worker.rs");
-            table
-        };
+fn worker_table() -> Table {
+    let mut table = Table::new();
+    table["name"] = value("worker");
+    table["path"] = value("src/bin/worker.rs");
+    table
+}
 
 const WASI_WORKER_VERSION: &str = "0.3";
 
@@ -76,15 +73,17 @@ impl Cli {
         // Insert only when there is no existing bin target with name worker
         let changed = match &mut toml["bin"] {
             Item::ArrayOfTables(tables) =>
-                if tables.iter().filter(|table| table["name"].as_str().contains(&"worker")).count() == 0 {
-                    tables.append(WORKER_TABLE());
-                    true
+                if tables.iter().filter(
+                        |table| table["name"].as_str().filter(|val| val == &"worker").is_some()
+                    ).count() == 0 {
+                        tables.append(worker_table());
+                        true
                 } else {
                     false
                 }
             _ => {
                 toml["bin"] = array();
-                toml["bin"].as_array_of_tables_mut().map(|arr| arr.append(WORKER_TABLE()));
+                toml["bin"].as_array_of_tables_mut().map(|arr| arr.append(worker_table()));
                 true
             }
         };
