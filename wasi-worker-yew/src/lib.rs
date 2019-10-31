@@ -1,13 +1,14 @@
-#![feature(trait_alias)]
-
 //! Yew worker compilable to wasm32-wasi target. It should provide about 2x better 
 //! performance than wasm32-unknown target.
 //! It is experimental implementation, uses customized fork of yew 
 //! until PR https://github.com/yewstack/yew/pull/719  accepted
 
-use yew::agent::*;
+pub use yew::agent::{Agent, AgentLink, Public, HandlerId, ToWorker, FromWorker, Packed};
+pub use wasi_worker::{FileOptions, ServiceOptions, ServiceWorker};
+
+use yew::agent::{AgentUpdate, Responder, AgentScope};
 use std::io;
-use wasi_worker::{Handler, ServiceWorker};
+use wasi_worker::{Handler};
 
 
 /// WASIAgent is the main executor and communication bridge for yew Agent with Reach = Public
@@ -116,7 +117,6 @@ impl<T: Agent<Reach = Public>> Responder<T> for WASIResponder
 
 #[cfg(test)]
 mod tests {
-    use yew::agent::*;
     use super::*;
     use wasi_worker::{FileOptions, ServiceOptions};
 

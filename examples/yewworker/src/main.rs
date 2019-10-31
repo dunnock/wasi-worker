@@ -1,6 +1,4 @@
-use wasi_worker_yew::{ThreadedWASI, WASIAgent};
-use yew::agent::{Agent, AgentLink, Public, HandlerId};
-use wasi_worker::{ServiceWorker, ServiceOptions, FileOptions};
+use wasi_worker_yew::*;
 
 struct MyAgent {
   link: AgentLink<Self>
