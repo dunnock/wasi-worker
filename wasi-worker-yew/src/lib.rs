@@ -1,7 +1,37 @@
 //! Yew worker compilable to wasm32-wasi target. It should provide about 2x better 
 //! performance than wasm32-unknown target.
+//! 
 //! It is experimental implementation, uses customized fork of yew 
 //! until PR https://github.com/yewstack/yew/pull/719  accepted
+//! Example usage:
+//! ```
+//! use wasi_worker_yew::{ThreadedWASI, WASIAgent};
+//! use yew::agent::*;
+//! use wasi_worker::{FileOptions, ServiceOptions, ServiceWorker};
+//! 
+//! struct MyAgent;
+//! impl Agent for MyAgent {
+//!     type Reach = Public;
+//!     type Message = String;
+//!     type Input = String;
+//!     type Output = String;
+//!     fn create(_link: AgentLink<Self>) -> Self { MyAgent { } }
+//!     fn update(&mut self, _msg: Self::Message) { /* ... */ }
+//!     fn handle(&mut self, _msg: Self::Input, _who: HandlerId) { /* */ }
+//! };
+//! 
+//! // In usual WASI setup with JS glue all output will be posted to /output.bin
+//! // Though in user filesystem to be able to run from shell we operate under current dir
+//! #[cfg(target_os="wasi")]
+//! let opt = ServiceOptions::default();
+//! #[cfg(not(target_os="wasi"))]
+//! let opt = ServiceOptions { output: FileOptions::File("./testdata/output.bin".to_string()) };
+//! let output_file = match &opt.output { FileOptions::File(path) => path.clone() };
+//! ServiceWorker::initialize(opt)
+//!   .expect("ServiceWorker::initialize");
+//! ServiceWorker::set_message_handler(Box::new(WASIAgent::<MyAgent>::new()));
+//! std::fs::remove_file(output_file);
+//! ```
 
 pub use yew::agent::{Agent, AgentLink, Public, HandlerId, ToWorker, FromWorker, Packed};
 pub use wasi_worker::{FileOptions, ServiceOptions, ServiceWorker};
@@ -11,30 +41,7 @@ use std::io;
 use wasi_worker::{Handler};
 
 
-/// WASIAgent is the main executor and communication bridge for yew Agent with Reach = Public
-/// 
-/// Example usage:
-/// ```
-/// use wasi_worker_yew::{ThreadedWASI, WASIAgent};
-/// use yew::agent::*;
-/// use wasi_worker::{FileOptions, ServiceOptions, ServiceWorker};
-/// 
-/// struct MyAgent;
-/// impl Agent for MyAgent {
-///     type Reach = Public;
-///     type Message = String;
-///     type Input = String;
-///     type Output = String;
-///     fn create(_link: AgentLink<Self>) -> Self { MyAgent { } }
-///     fn update(&mut self, _msg: Self::Message) { /* ... */ }
-///     fn handle(&mut self, _msg: Self::Input, _who: HandlerId) { /* */ }
-/// };
-/// 
-/// let opt = ServiceOptions{output: FileOptions::File("./testdata/outputdoc.bin".to_string())};
-/// ServiceWorker::initialize(opt);
-/// ServiceWorker::set_message_handler(Box::new(WASIAgent::<MyAgent>::new()));
-/// std::fs::remove_file("./testdata/outputdoc.bin");
-/// ```
+/// WASIAgent is the main executor and communication bridge for yew Agent with Reach = Public 
 pub struct WASIAgent<T: Agent<Reach = Public>> {
     scope: AgentScope<T>
 }

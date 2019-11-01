@@ -13,9 +13,9 @@ categories = ["web-programming", "wasm"]
 
 [dependencies]
 wasi = "0.7"
-wasi-worker = { path = ".." }
+wasi-worker = { path = "..", version = "0.3" }
 #yew = { git = "https://github.com/yewstack/yew" }
-yew = { git = "https://github.com/dunnock/yew", branch = "extensible-agent" }
+yew = { git = "https://github.com/dunnock/yew", branch = "extensible-agent", version = "0.10" }
 anymap = "0.12"
 
 [patch.'https://github.com/yewstack/yew']
