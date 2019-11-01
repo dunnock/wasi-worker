@@ -5,5 +5,11 @@ authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace]
 
 [dependencies]
+wasi-worker = "0.3"
+
+[[bin]]
+name = "worker"
+path = "src/bin/worker.rs"

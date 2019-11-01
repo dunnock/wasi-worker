@@ -15,6 +15,6 @@ name="main"
 path = "src/main.rs"
 
 [dependencies]
-wasi-worker-yew = { path="../../wasi-worker-yew" }
+wasi-worker-yew = { path="../../crates/wasi-worker-yew" }
 serde_json = "1.0"
 serde = "1.0"

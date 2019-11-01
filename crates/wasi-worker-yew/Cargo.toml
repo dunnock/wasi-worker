@@ -8,17 +8,12 @@ description = "WASM/WASI browser service worker for yew (Agent<Reach=Public>)"
 readme = "README.md"
 keywords = ["wasi", "wasm", "worker", "yew", "agent"]
 categories = ["web-programming", "wasm"]
+repository = "https://github.com/dunnock/wasi-worker"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wasi = "0.7"
-wasi-worker = { path = "..", version = "0.3" }
-#yew = { git = "https://github.com/yewstack/yew" }
-yew = { git = "https://github.com/dunnock/yew", branch = "extensible-agent", version = "0.10" }
+wasi-worker = { path = "../..", version = "0.3" }
+yew = "0.10"
+#yew = { git = "https://github.com/dunnock/yew", branch = "extensible-agent", version = "0.10" }
 anymap = "0.12"
-
-[patch.'https://github.com/yewstack/yew']
-# yew should be changesd once PR https://github.com/yewstack/yew/pull/721 lands:
-# yew = { path = "../../../opensource/yew" }
-yew = { git = "https://github.com/dunnock/yew", branch = "extensible-agent" }
