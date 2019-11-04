@@ -17,6 +17,5 @@ members = ["crates/*", "examples/*"]
 
 
 [patch.crates-io]
-# yew should be changesd once PR https://github.com/yewstack/yew/pull/721 lands:
 # yew = { path = "../../../opensource/yew" }
-yew = { git = "https://github.com/dunnock/yew", branch = "extensible-agent" }
+yew = { git = "https://github.com/yewstack/yew" }
