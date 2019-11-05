@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { IFs } from "memfs";
 import { File } from "memfs/lib/node";
-import WasmFs from "../../../../wasmer-js/packages/wasmfs";
+import WasmFs from "@wasmer/wasmfs";
 export declare class WorkerFS {
     wasmFs: WasmFs;
     stdin: BufferedStdin;

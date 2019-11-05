@@ -1,6 +1,6 @@
 import { IFs } from "memfs";
 import { File } from "memfs/lib/node";
-import WasmFs from "../../../../wasmer-js/packages/wasmfs";
+import WasmFs from "@wasmer/wasmfs";
 import { Volume, IReadStream } from "memfs/lib/volume";
 
 

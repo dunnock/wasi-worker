@@ -78,5 +78,5 @@ fn test_deploy() {
     let files = get_dir_content("./dist")
       .expect("dist dir exist after running `wasiworker deploy`")
       .files.len();
-    assert_eq!(files, 3, "should have 3 files in ./dist after `wasiworker deploy`");
+    assert_eq!(files, 2, "should have 2 files in ./dist after `wasiworker deploy`");
 }

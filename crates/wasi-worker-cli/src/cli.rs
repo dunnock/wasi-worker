@@ -32,7 +32,6 @@ pub enum Cli {
 
 impl Cli {
     const WORKER_JS: &'static [u8] = include_bytes!("../js/dist/worker.js");
-    const WASM_TRANSFORMER: &'static [u8] = include_bytes!("../js/dist/wasm_transformer_bg.wasm");
     const WORKER_RS: &'static [u8] = include_bytes!("../worker/worker.rs");
     pub fn exec(&self) -> io::Result<()> {
         match self {
@@ -52,8 +51,6 @@ impl Cli {
         fs::copy("target/wasm32-wasi/release/worker.wasm", "dist/worker.wasm")?;
         println!("Deploying JavaScript glue code under dist/worker.js");
         fs::write("dist/worker.js", Self::WORKER_JS)?;
-        println!("Deploying wasm transformer under dist/wasm_transformer_bg.wasm");
-        fs::write("dist/wasm_transformer_bg.wasm", Self::WASM_TRANSFORMER)?;
         Ok(())
     }
 

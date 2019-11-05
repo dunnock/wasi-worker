@@ -74,12 +74,15 @@ It will also embed whaever version of JS glue was placed under the ./dist subfol
 ## Build JS glue for development
 
 ```
+cd js
 npm install
 npm run build:dev
 ```
 
 ## Build JS glue for distribution
+
 ```
+cd js
 npm install
 npm run build
 ```

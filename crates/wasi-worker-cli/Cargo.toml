@@ -1,5 +1,5 @@
 [package]
-version = "0.2.3"
+version = "0.3.0"
 name = "wasi-worker-cli"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 categories = [

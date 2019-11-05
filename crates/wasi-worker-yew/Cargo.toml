@@ -15,5 +15,4 @@ repository = "https://github.com/dunnock/wasi-worker"
 [dependencies]
 wasi-worker = { path = "../..", version = "0.3" }
 yew = "0.10"
-#yew = { git = "https://github.com/dunnock/yew", branch = "extensible-agent", version = "0.10" }
 anymap = "0.12"
