@@ -81,9 +81,11 @@ class PipedWriter {
 
 class BufferedStdin {
   messages: Array<Uint8Array>;
+  lastPosition: number;
 
   constructor() {
     this.messages = new Array;
+    this.lastPosition = 0;
   }
 
   bindToFd(stdin_fd: File) {
@@ -102,7 +104,7 @@ class BufferedStdin {
   ) => {
     if (this.messages.length === 0) {
       return 0;
-    } else if (position && position > 0) {
+    } else if (position && position > 0 && position != this.lastPosition) {
       this.error("BufferedStdin read on position not supported: " + position)
     }
     let message = this.messages.shift();
@@ -113,6 +115,7 @@ class BufferedStdin {
     } else {
       return 0;
     }
+    this.lastPosition += message.length;
     return message.length;
   }
 

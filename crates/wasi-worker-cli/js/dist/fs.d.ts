@@ -23,6 +23,7 @@ declare class PipedWriter {
 }
 declare class BufferedStdin {
     messages: Array<Uint8Array>;
+    lastPosition: number;
     constructor();
     bindToFd(stdin_fd: File): void;
     push(message: Uint8Array): void;
