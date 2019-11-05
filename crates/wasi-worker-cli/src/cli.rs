@@ -108,6 +108,7 @@ impl Cli {
             "--bin=worker",
             "--release",
             "--target=wasm32-wasi",
+            "--target-dir=./target"
         ])
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit());
