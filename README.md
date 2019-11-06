@@ -16,7 +16,7 @@ As it stated before code compiled to WASI seems to run about 2 times faster (lin
 
 # Usage example
 
-This example requires WASI JavaScript bindings [which can be deployed with wasi-worker-cli](https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli) or [WASI environment](https://github.com/dunnock/wasi-worker/tree/master/examples/myworker) with properly preconfigured filesystem
+This example requires WASI JavaScript bindings [which can be deployed with wasi-worker-cli](https://github.com/dunnock/wasi-worker/tree/master/crates/wasi-worker-cli) or [WASI environment](https://github.com/dunnock/wasi-worker/tree/master/examples/myworker) with properly preconfigured filesystem
 
 ```rust
 use wasi_worker::*;
