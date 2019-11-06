@@ -1,6 +1,6 @@
 The proper way to create WASM browser service workers.
 
-This crate provides rust library and JS glue code to compose browser service worker on WASI.
+This crate provides rust library and JS glue code allowing to wrap POSIX compatible code into WASM/WASI target to be able to run in the browser service worker. It also provides imput/output message channel with main web application.
 
 # Why specifically WASI?
 
@@ -116,4 +116,4 @@ pub extern "C" fn message_ready() -> usize {
 - [X] library code with WASI fs interface
 - [X] basic example
 - [X] documentation
-- [ ] CLI for worker setup
+- [X] CLI for worker setup

@@ -28,7 +28,16 @@ SUBCOMMANDS:
     install    Install static files and worker.rs template in current crate
 ```
 
-1. Build and deploy `worker` under ./dist with all depencies
+1. Install wasiworker template considering current directory is a crate root
+
+```
+wasiworker install
+```
+
+It will create `bin/worker.rs` and place relevant target and dependencies in current `Cargo.toml`. Will panic if Cargo.toml was not found.
+
+
+2. Build and deploy `worker` under ./dist with all depencies
 
 ```
 wasiworker deploy
@@ -36,7 +45,7 @@ wasiworker deploy
 
 It will run `cargo build --release --target wasm32-wasi --bin worker`, copy resulting worker.wasm under ./dist and copy JavaScript glue code under ./dist/worker.js. It will also add [wasm_transformer](https://github.com/wasmerio/wasmer-js/tree/master/packages/wasm-transformer) to be able to run in browser.
 
-Note: use [wasm-gc](https://github.com/alexcrichton/wasm-gc) tool to significantly cut resulting wasm file size:
+Note: currently it uses [wasm-gc](https://github.com/alexcrichton/wasm-gc) tool to significantly cut resulting wasm file size:
 ```
 % cargo install wasm-gc
 % ls -al dist/worker.wasm
@@ -45,14 +54,6 @@ Note: use [wasm-gc](https://github.com/alexcrichton/wasm-gc) tool to significant
 % ls -al dist/worker.wasm
 -rwxr-xr-x  1 max  staff    94794 31 Oct 00:36 worker.wasm
 ```
-
-2. Install wasiworker template considering current directory is a crate root
-
-```
-wasiworker install
-```
-
-It will create `bin/worker.rs` and place relevant target and dependencies in current `Cargo.toml`. Will panic if Cargo.toml was not found.
 
 
 ## Building/hacking
@@ -102,7 +103,7 @@ JavaScript glue code is built on top of following great packages. Thanks https:/
 - [X] Embed JavaScript dist into package
 - [X] Documentation
 - [ ] Cargo build script to pack and install release or debug version, including building js dependencies
-- [ ] Add wasm-gc to optimize resulting wasm size
+- [X] Add wasm-gc to optimize resulting wasm size
 - [X] CLI install
 - [ ] CLI install allows to customize worker name
 - [X] CLI deploy release only

@@ -1,5 +1,5 @@
 [package]
-version = "0.3.1"
+version = "0.3.2"
 name = "wasi-worker-cli"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 categories = [
@@ -28,6 +28,7 @@ path = "src/main.rs"
 [dependencies]
 structopt = "0.3"
 toml_edit = "0.1"
+wasm-gc-api = "0.1"
 
 [dev-dependencies]
 fs_extra = "1.1"

@@ -7,5 +7,7 @@
 mod cli;
 #[cfg(test)]
 mod test;
+mod gc;
 
+pub use gc::gc;
 pub use cli::Cli;

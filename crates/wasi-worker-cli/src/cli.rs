@@ -4,6 +4,7 @@ use std::io;
 use std::path::Path;
 use std::process::{Command, Stdio};
 use toml_edit::{Document, value, Item, Table, array};
+use super::gc;
 
 fn worker_table() -> Table {
     let mut table = Table::new();
@@ -49,6 +50,8 @@ impl Cli {
         fs::create_dir_all("dist")?;
         println!("Copying target/wasm32-wasi/release/worker.wasm");
         fs::copy("target/wasm32-wasi/release/worker.wasm", "dist/worker.wasm")?;
+        println!("Cleaning worker.wasm with wasm-gc");
+        gc("dist/worker.wasm")?;
         println!("Deploying JavaScript glue code under dist/worker.js");
         fs::write("dist/worker.js", Self::WORKER_JS)?;
         Ok(())
