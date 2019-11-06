@@ -4,7 +4,7 @@ This crate provides rust library and JS glue code allowing to wrap POSIX compati
 
 # Why WASI?
 
-> WebAssembly System Interfaces (WASI) is an exciting new specification that allows running POSIX-like applications anywhere, safely and securely with WebAssembly.
+> WebAssembly System Interfaces (WASI) is an exciting new specification that allows running POSIX-like applications anywhere, safely and securely with WebAssembly. [-> Medium / Running WASI in Javascript with Wasmer-JS](https://medium.com/wasmer/wasmer-js-9a53e837b80)
 
 POSIX-compatible applications compiled to WASI can now also run in browser, think of code-reuse and delegating server workload to client side. On top of that it appears code compiled to wasm32-wasi target is executing about 2 times faster than code compiled to other wasm32 targets with web bindings, CPU intensive workloads can now execute with performance close to native targets.
 
