@@ -38,6 +38,7 @@ fn main() {
 }
 
 // Function will be called from JS on incoming message
+#[no_mangle]
 pub extern "C" fn message_ready() -> usize {
   ServiceWorker::on_message()
     .expect("ServiceWorker.on_message")
@@ -111,6 +112,7 @@ fn main() {
 // To operate it requires JS glue - see wasi-worker-cli
 // Note: It will be substituted by poll_oneoff, 
 // though currently poll_oneoff does not transfer control
+#[no_mangle]
 pub extern "C" fn message_ready() -> usize {
   ServiceWorker::on_message()
     .expect("ServiceWorker.on_message")
@@ -124,3 +126,4 @@ pub extern "C" fn message_ready() -> usize {
 - [X] basic example
 - [X] documentation
 - [X] CLI for worker setup
+- [ ] drop output file on exit
