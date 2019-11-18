@@ -126,4 +126,4 @@ pub extern "C" fn message_ready() -> usize {
 - [X] basic example
 - [X] documentation
 - [X] CLI for worker setup
-- [ ] drop output file on exit
+- [X] drop output file on exit
