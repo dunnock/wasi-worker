@@ -17,6 +17,7 @@ use super::{ServiceOptions, FileOptions};
 pub struct ServiceWorker {
   output: File,
   input: io::Stdin,
+  options: ServiceOptions
 }
 
 /// Handler for incoming messages via ServiceWorker
@@ -33,11 +34,12 @@ impl ServiceWorker {
   /// Initialize ServiceWorker instance.
   /// ServiceWorker operates as singleton, all struct methods are static.
   /// Unless initialized all methods will result in error io::ErrorKind::NotConnected.
-  pub fn initialize(opt: ServiceOptions) -> io::Result<()> {
-    let output = match opt.output { FileOptions::File(path) => File::create(path)? };
+  pub fn initialize(options: ServiceOptions) -> io::Result<()> {
+    let output = match &options.output { FileOptions::File(path) => File::create(path)? };
     let sw = ServiceWorker {
       output,
-      input: io::stdin()
+      input: io::stdin(),
+      options
     };
     SERVICE.with(|service| service.replace(Some(sw)));
     Ok(())
@@ -87,5 +89,24 @@ impl ServiceWorker {
         Err(io::Error::new(io::ErrorKind::NotConnected, "Service was not initialized"))
       }
     })
+  }
+
+  pub fn kill() -> () {
+    SERVICE.with(|service| service.replace(None));
+    HANDLER.with(|handler| handler.replace(None));
+  }
+}
+
+impl Drop for ServiceWorker {
+  fn drop(&mut self) {
+    if self.options.cleanup {
+      let clr = match &self.options.output {
+        FileOptions::File(output) => std::fs::remove_file(output)
+      };
+      match clr {
+        Ok(_) => (),
+        Err(err) => eprintln!("Failed to remove file {}", err)
+      }
+    }
   }
 }

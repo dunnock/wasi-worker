@@ -10,17 +10,17 @@ impl Handler for MyWorker {
 }
 
 fn main() {
-  // In WASI setup output will go to /output.bin
-  #[cfg(target_os="wasi")]
   let opt = ServiceOptions::default();
-  // In user filesystem we operate under current dir
-  #[cfg(not(target_os="wasi"))]
-  let opt = ServiceOptions { 
-    output: FileOptions::File("./testdata/output.bin".to_string()) 
-  };
-  let output_file = match &opt.output { 
-    FileOptions::File(path) => path.clone() 
-  };
+  /* 
+   * In WASI setup output will go to /output.bin
+   * When compiled with other than wasi target default output is ./output.bin
+   * To override:
+   * ```
+   * let opt = ServiceOptions { 
+   *   output: FileOptions::File("./testdata/output.bin".to_string()) 
+   * };
+   * ```
+   */
   ServiceWorker::initialize(opt)
     .expect("ServiceWorker::initialize");
 

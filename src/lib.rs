@@ -21,12 +21,9 @@
 //!  }
 //! 
 //!  fn main() {
-//!    // In usual WASI setup with JS glue all output will be posted to /output.bin
-//!    // Though in user filesystem to be able to run from shell we operate under current dir
-//!    #[cfg(target_os="wasi")]
-//!    let opt = ServiceOptions::default();
-//!    #[cfg(not(target_os="wasi"))]
-//!    let opt = ServiceOptions { output: FileOptions::File("./testdata/output.bin".to_string()) };
+//!    // In WASI setup with JS glue all output will be posted to memfs::/output.bin
+//!    // In native OS to be able to run test from shell output goes to ./output.bin
+//!    let opt = ServiceOptions::default().with_cleanup();
 //!    let output_file = match &opt.output { FileOptions::File(path) => path.clone() };
 //!    ServiceWorker::initialize(opt)
 //!      .expect("ServiceWorker::initialize");
@@ -37,9 +34,6 @@
 //!    // Send binary message to main browser application
 //!    ServiceWorker::post_message(b"message")
 //!      .expect("ServiceWorker.post_message");
-//!    // It still requires cleanup (TODO impl Drop)
-//!    std::fs::remove_file(output_file)
-//!      .expect("Remove ./testdata/output.bin");
 //!  }
 //! 
 //!  // this function will be called from worker.js when it receives message
@@ -62,13 +56,27 @@ pub enum FileOptions {
 /// Options for ServiceWorker
 pub struct ServiceOptions {
 // TODO:  input: FileOptions,
+  pub cleanup: bool,
   pub output: FileOptions,
+}
+
+impl ServiceOptions {
+  pub fn with_cleanup(mut self) -> Self {
+    self.cleanup = true;
+    self
+  }
 }
 
 impl Default for ServiceOptions {
   fn default() -> Self {
     Self {
-      output: FileOptions::File("/output.bin".to_string())
+      output: 
+        if cfg!(target_os="wasi") {
+          FileOptions::File("/output.bin".to_string())
+        } else {
+          FileOptions::File("./output.bin".to_string())
+        },
+      cleanup: false
     }
   }
 }
@@ -76,8 +84,22 @@ impl Default for ServiceOptions {
 
 #[cfg(test)]
 mod tests {
+    use super::{ServiceOptions, FileOptions, ServiceWorker};
+  
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn cleanup() {
+      {
+        let opt = ServiceOptions { 
+          output: FileOptions::File("./testdata/output.bin".to_string()), 
+          cleanup: true 
+        };
+        ServiceWorker::initialize(opt)
+          .expect("ServiceWorker::initialize");
+        std::fs::File::open("./testdata/output.bin")
+          .expect("/testdata/output.bin should been created");
+        ServiceWorker::kill();
+      }
+      std::fs::File::open("./testdata/output.bin")
+        .expect_err("/testdata/output.bin should been cleaned up");
     }
 }

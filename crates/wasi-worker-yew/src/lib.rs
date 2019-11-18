@@ -21,16 +21,12 @@
 //! };
 //! 
 //! // In usual WASI setup with JS glue all output will be posted to /output.bin
-//! // Though in user filesystem to be able to run from shell we operate under current dir
-//! #[cfg(target_os="wasi")]
-//! let opt = ServiceOptions::default();
-//! #[cfg(not(target_os="wasi"))]
-//! let opt = ServiceOptions { output: FileOptions::File("./testdata/output.bin".to_string()) };
+//! // Though in user filesystem output goes under ./output.bin
+//! let opt = ServiceOptions::default().with_cleanup();
 //! let output_file = match &opt.output { FileOptions::File(path) => path.clone() };
 //! ServiceWorker::initialize(opt)
 //!   .expect("ServiceWorker::initialize");
 //! ServiceWorker::set_message_handler(Box::new(WASIAgent::<MyAgent>::new()));
-//! std::fs::remove_file(output_file);
 //! ```
 
 pub use yew::agent::{Agent, AgentLink, Public, HandlerId, ToWorker, FromWorker, Packed};
@@ -142,7 +138,10 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let opt = ServiceOptions{output: FileOptions::File("./testdata/output.bin".to_string())};
+        let opt = ServiceOptions { 
+            output: FileOptions::File("./testdata/output.bin".to_string()), 
+            cleanup: true 
+        };
         ServiceWorker::initialize(opt)
             .expect("ServiceWorker::initialize");
         ServiceWorker::set_message_handler(Box::new(WASIAgent::<MyAgent>::new()));
@@ -152,7 +151,5 @@ mod tests {
         let data = std::fs::read("./testdata/output.bin")
             .expect("Read testdata/output.bin");
         assert_eq!(data, message);
-        std::fs::remove_file("./testdata/output.bin")
-            .expect("Remove testdata/output.bin");
     }
 }

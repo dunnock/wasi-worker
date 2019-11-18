@@ -13,7 +13,7 @@ fn worker_table() -> Table {
     table
 }
 
-const WASI_WORKER_VERSION: &str = "0.3";
+const WASI_WORKER_VERSION: &str = "0.4";
 
 /// Install JavaScript glue code and WASM toolset for wasi-worker browser worker to function.
 /// 

@@ -1,6 +1,6 @@
 [package]
 name = "wasi-worker-yew"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
 license = "MIT"
@@ -13,6 +13,6 @@ repository = "https://github.com/dunnock/wasi-worker"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wasi-worker = { path = "../..", version = "0.3" }
+wasi-worker = { path = "../..", version = "0.4" }
 yew = "0.10"
 anymap = "0.12"

@@ -26,11 +26,8 @@ impl Agent for MyAgent {
 
 fn main() {
   // In usual WASI setup with JS glue all output will be posted to /output.bin
-  // Though in user filesystem to be able to run from shell we operate under current dir
-  #[cfg(target_os="wasi")]
-  let opt = ServiceOptions::default();
-  #[cfg(not(target_os="wasi"))]
-  let opt = ServiceOptions { output: FileOptions::File("./testdata/output.bin".to_string()) };
+  // Though in user filesystem to be able to run from shell output goes to ./output.bin
+  let opt = ServiceOptions::default().with_cleanup();
   let output_file = match &opt.output { FileOptions::File(path) => path.clone() };
   ServiceWorker::initialize(opt)
     .expect("ServiceWorker created");
@@ -50,8 +47,6 @@ fn main() {
   let output_dump = std::fs::read(&output_file).unwrap();
   println!("Outgoing file content {:?}", String::from_utf8(output_dump.clone()));
   assert_eq!(output_dump, std::fs::read(format!("{}.snapshot", output_file)).unwrap());
-  std::fs::remove_file(output_file)
-    .expect("Remove output.bin");
 }
 
 // this function will be called from worker.js when it receives message
