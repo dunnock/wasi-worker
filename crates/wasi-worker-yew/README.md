@@ -1,10 +1,10 @@
 # Yew worker compiled to wasm32-wasi
 
-This library allows to compile and deploy [yew]() worker with wasm32-wasi target. 
+This library allows to compile and deploy [yew](https://github.com/yewstack/yew) worker with wasm32-wasi target. 
 It allows to compile and run POSIX-like applications, having access to timer, random numbers and 
 to emulated file system (memfs).
 
-On some operations [wasi workers run faster than wasm-bindgen or stdweb](https:://github.com/dunnock/wabench).
+On some operations wasi workers run faster than [wasm-bindgen or stdweb](https://github.com/dunnock/wabench).
 
 ## Example usage:
 
