@@ -1,15 +1,16 @@
-//! Yew worker compilable to wasm32-wasi target. It should provide about 2x better 
-//! performance than wasm32-unknown target.
+//! Yew worker compilable to wasm32-wasi target. It allows to compile and run POSIX-like
+//! applications, having access to random and to emulated file system (memfs).
+//! On some operations [wasi workers run faster than wasm-bindgen or stdweb](https:://github.com/dunnock/wabench).
 //! 
-//! It is experimental implementation, uses customized fork of yew 
-//! until PR https://github.com/yewstack/yew/pull/719  accepted
+//! It depends on [wasi-worker-cli](https://crates.io/crates/wasi-worker-cli) for deployment.
+//! 
 //! Example usage:
 //! ```
 //! use wasi_worker_yew::{ThreadedWASI, WASIAgent};
 //! use yew::agent::*;
 //! use wasi_worker::{FileOptions, ServiceOptions, ServiceWorker};
 //! 
-//! struct MyAgent;
+//! pub struct MyAgent;
 //! impl Agent for MyAgent {
 //!     type Reach = Public;
 //!     type Message = String;
@@ -18,6 +19,8 @@
 //!     fn create(_link: AgentLink<Self>) -> Self { MyAgent { } }
 //!     fn update(&mut self, _msg: Self::Message) { /* ... */ }
 //!     fn handle(&mut self, _msg: Self::Input, _who: HandlerId) { /* */ }
+//!     // link to the JavaScript runner, worker instantiated from:
+//!     fn name_of_resource() -> &'static str { "worker.js" }
 //! };
 //! 
 //! // In usual WASI setup with JS glue all output will be posted to /output.bin
