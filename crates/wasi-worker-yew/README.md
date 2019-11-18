@@ -10,7 +10,7 @@ On some operations [wasi workers run faster than wasm-bindgen or stdweb](https::
 
 ### In your `Cargo.toml`
 ```
-wasi_worker_yew = "0.4"
+wasi-worker-yew = "0.4"
 ```
 
 ### In `src/bin/worker.rs`
