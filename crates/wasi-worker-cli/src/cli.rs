@@ -24,10 +24,7 @@ pub enum Cli {
     /// 
     /// Note! it adds [[bin]] target to ./Cargo.toml and sets wasi-worker dependency
     Install,
-    /// Build with `--bin worker` and deploy with glue code under ./dist
-    /// 
-    /// Resulting dependency is still quite big, use wasm-gc to shrink it:
-    /// % wasm-gc dist/worker.wasm
+    /// Executes `cargo build --bin worker` and deploys with glue code under ./dist
     Deploy,
 }
 

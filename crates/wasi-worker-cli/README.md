@@ -23,7 +23,7 @@ FLAGS:
     -V, --version    Prints version information
 
 SUBCOMMANDS:
-    deploy     Build with `--bin worker` and deploy with glue code under ./dist
+    deploy     Executes `cargo build --bin worker` and deploys with glue code under ./dist
     help       Prints this message or the help of the given subcommand(s)
     install    Install static files and worker.rs template in current crate
 ```
@@ -45,15 +45,8 @@ wasiworker deploy
 
 It will run `cargo build --release --target wasm32-wasi --bin worker`, copy resulting worker.wasm under ./dist and copy JavaScript glue code under ./dist/worker.js. It will also add [wasm_transformer](https://github.com/wasmerio/wasmer-js/tree/master/packages/wasm-transformer) to be able to run in browser.
 
-Note: currently it uses [wasm-gc](https://github.com/alexcrichton/wasm-gc) tool to significantly cut resulting wasm file size:
-```
-% cargo install wasm-gc
-% ls -al dist/worker.wasm
--rwxr-xr-x  1 max  staff  1905069 31 Oct 00:35 worker.wasm
-% wasm-gc dist/worker.wasm
-% ls -al dist/worker.wasm
--rwxr-xr-x  1 max  staff    94794 31 Oct 00:36 worker.wasm
-```
+Note: currently it uses [wasm-gc](https://github.com/alexcrichton/wasm-gc) tool to significantly cut resulting wasm file size.
+- [ ] Look at converting to `cargo wasi` subcommand
 
 
 ## Building/hacking
