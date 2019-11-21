@@ -1,4 +1,4 @@
-import WASI from "@wasmer/wasi";
+import WASI from  "@wasmer/wasi";
 import { lowerI64Imports } from "@wasmer/wasm-transformer";
 import { WorkerFS } from './fs';
 
