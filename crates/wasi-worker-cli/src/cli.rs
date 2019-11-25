@@ -1,10 +1,10 @@
-use structopt::StructOpt;
+use super::gc;
 use std::fs;
 use std::io;
 use std::path::Path;
 use std::process::{Command, Stdio};
-use toml_edit::{Document, value, Item, Table, array};
-use super::gc;
+use structopt::StructOpt;
+use toml_edit::{array, value, Document, Item, Table};
 
 fn worker_table() -> Table {
     let mut table = Table::new();
@@ -16,12 +16,12 @@ fn worker_table() -> Table {
 const WASI_WORKER_VERSION: &str = "0.4";
 
 /// Install JavaScript glue code and WASM toolset for wasi-worker browser worker to function.
-/// 
+///
 /// Details https://crates.io/crates/wasi-worker
 #[derive(Debug, StructOpt)]
 pub enum Cli {
-    /// Install static files and worker.rs template in current crate. 
-    /// 
+    /// Install static files and worker.rs template in current crate.
+    ///
     /// Note! it adds [[bin]] target to ./Cargo.toml and sets wasi-worker dependency
     Install,
     /// Executes `cargo build --bin worker` and deploys with glue code under ./dist
@@ -34,7 +34,7 @@ impl Cli {
     pub fn exec(&self) -> io::Result<()> {
         match self {
             Self::Install => self.install(),
-            Self::Deploy => self.deploy()
+            Self::Deploy => self.deploy(),
         }
     }
     fn install(&self) -> io::Result<()> {
@@ -65,22 +65,34 @@ impl Cli {
 
         println!("Checking Cargo.toml for bin worker target...");
         let cargo_toml = fs::read_to_string("./Cargo.toml")?;
-        let mut toml = cargo_toml.parse::<Document>()
+        let mut toml = cargo_toml
+            .parse::<Document>()
             .expect("Invalid Cargo.toml, bin target not installed but can be built");
         // Insert only when there is no existing bin target with name worker
         let changed = match &mut toml["bin"] {
-            Item::ArrayOfTables(tables) =>
-                if tables.iter().filter(
-                        |table| table["name"].as_str().filter(|val| val == &"worker").is_some()
-                    ).count() == 0 {
-                        tables.append(worker_table());
-                        true
+            Item::ArrayOfTables(tables) => {
+                if tables
+                    .iter()
+                    .filter(|table| {
+                        table["name"]
+                            .as_str()
+                            .filter(|val| val == &"worker")
+                            .is_some()
+                    })
+                    .count()
+                    == 0
+                {
+                    tables.append(worker_table());
+                    true
                 } else {
                     false
                 }
+            }
             _ => {
                 toml["bin"] = array();
-                toml["bin"].as_array_of_tables_mut().map(|arr| arr.append(worker_table()));
+                toml["bin"]
+                    .as_array_of_tables_mut()
+                    .map(|arr| arr.append(worker_table()));
                 true
             }
         };
@@ -105,7 +117,7 @@ impl Cli {
             "--bin=worker",
             "--release",
             "--target=wasm32-wasi",
-            "--target-dir=./target"
+            "--target-dir=./target",
         ])
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit());
