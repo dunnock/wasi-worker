@@ -19,9 +19,9 @@ impl Agent for MyAgent {
     }
 
     // Handle incoming messages from components of other agents.
-    fn handle(&mut self, msg: Self::Input, who: HandlerId) {
+    fn handle_input(&mut self, msg: Self::Input, who: HandlerId) {
         println!("Got incoming message: {}", msg);
-        self.link.response(who, msg);
+        self.link.respond(who, msg);
     }
 }
 

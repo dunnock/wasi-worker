@@ -37,7 +37,7 @@ pub use yew::agent::{Agent, AgentLink, FromWorker, HandlerId, Packed, Public, To
 
 use std::io;
 use wasi_worker::Handler;
-use yew::agent::{AgentScope, AgentUpdate, Responder};
+use yew::agent::{AgentScope, AgentLifecycleEvent, Responder};
 
 /// WASIAgent is the main executor and communication bridge for yew Agent with Reach = Public
 pub struct WASIAgent<T: Agent<Reach = Public>> {
@@ -64,7 +64,7 @@ impl<T: Agent<Reach = Public>> ThreadedWASI for WASIAgent<T> {
     fn run(&self) -> io::Result<()> {
         let responder = WASIResponder {};
         let link = AgentLink::connect(&self.scope, responder);
-        let upd = AgentUpdate::Create(link);
+        let upd = AgentLifecycleEvent::Create(link);
         self.scope.send(upd);
         let loaded: FromWorker<T::Output> = FromWorker::WorkerLoaded;
         let loaded = loaded.pack();
@@ -77,19 +77,19 @@ impl<T: Agent<Reach = Public>> Handler for WASIAgent<T> {
         let msg = ToWorker::<T::Input>::unpack(&data);
         match msg {
             ToWorker::Connected(id) => {
-                let upd = AgentUpdate::Connected(id);
+                let upd = AgentLifecycleEvent::Connected(id);
                 self.scope.send(upd);
             }
             ToWorker::ProcessInput(id, value) => {
-                let upd = AgentUpdate::Input(value, id);
+                let upd = AgentLifecycleEvent::Input(value, id);
                 self.scope.send(upd);
             }
             ToWorker::Disconnected(id) => {
-                let upd = AgentUpdate::Disconnected(id);
+                let upd = AgentLifecycleEvent::Disconnected(id);
                 self.scope.send(upd);
             }
             ToWorker::Destroy => {
-                let upd = AgentUpdate::Destroy;
+                let upd = AgentLifecycleEvent::Destroy;
                 self.scope.send(upd);
                 std::process::exit(1);
             }
@@ -104,7 +104,7 @@ struct WASIResponder {}
 //
 // In case of sending message failed it will place error to stderr, which should print to console.
 impl<T: Agent<Reach = Public>> Responder<T> for WASIResponder {
-    fn response(&self, id: HandlerId, output: T::Output) {
+    fn respond(&self, id: HandlerId, output: T::Output) {
         let msg = FromWorker::ProcessOutput(id, output);
         let data = msg.pack();
         if let Err(err) = ServiceWorker::post_message(&data) {
@@ -129,7 +129,7 @@ mod tests {
         }
         fn update(&mut self, _msg: Self::Message) { /* ... */
         }
-        fn handle(&mut self, _msg: Self::Input, _who: HandlerId) { /* */
+        fn handle_input(&mut self, _msg: Self::Input, _who: HandlerId) { /* */
         }
     }
 
