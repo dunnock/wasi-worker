@@ -1,6 +1,6 @@
 [package]
 name = "wasi-worker-yew"
-version = "0.5.1"
+version = "0.5.2"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
