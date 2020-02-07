@@ -6,13 +6,14 @@ This crate provides rust library and JS glue code allowing to wrap POSIX compati
 
 > WebAssembly System Interfaces (WASI) is an exciting new specification that allows running POSIX-like applications anywhere, safely and securely with WebAssembly. [-> Medium / Running WASI in Javascript with Wasmer-JS](https://medium.com/wasmer/wasmer-js-9a53e837b80)
 
-POSIX-compatible applications compiled to WASI can now also run in browser, think of code-reuse and delegating server workload to client side. On top of that it appears code compiled to wasm32-wasi target is executing about 2 times faster than code compiled to other wasm32 targets with web bindings, CPU intensive workloads can now execute with performance close to native targets.
+POSIX-compatible applications compiled to WASI can now also run in browser, think of code-reuse and delegating server workload to client side. On top of that it appears code compiled to wasm32-wasi target is executing about 2 times faster than code compiled to other wasm32 targets with web bindings, CPU intensive workloads can now execute with performance close to native targets (try http://wabench.com:8080).
 
 # Why might I need wasi-worker?
 
-WASM code which executes as part of web application occupies same javascript thread, hence if wasm code is running complex calculations it will block browser application while working. To make it working in separate thread we can employ [browser service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
+WASI target allows to compile many crates which are using standard library, except threads and networking which is not supported yet. The only problem is that WASI is not built to be executed from browser, rather it is standard which aims to run WASM code on server side. Leveraging [@wasmer/wasi](https://github.com/wasmerio/wasmer-js) this crate provides browser service worker WASI runtime as well as communication bridge to/from web application.
 
-As it stated before code compiled to WASI seems to run about 2 times faster (link to benchmark). The only problem is that WASI is not built to be executed from browser, rather it is standard which aims to run WASM code on server side. Leveraging [@wasmer/wasi](https://github.com/wasmerio/wasmer-js) this crate provides browser service worker WASI runtime as well as communication bridge to/from web application.
+Another possible reason is WASM code which executes as part of web application occupies same javascript thread, hence if wasm code is running complex calculations it will block browser application while working. To make it working in separate thread we can employ [browser service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
+
 
 # Usage example
 

@@ -1,6 +1,6 @@
 [package]
 name = "wasi-worker"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
