@@ -4,6 +4,8 @@ This tool provides JavaScript glue for browser service workers built with [wasi-
 
 ## Installation
 
+Note: wasi-worker-cli 0.5+ requires rustc 1.41+ as it bases on wasi-snapshot-preview1 now
+
 ```
 cargo install wasi-worker-cli
 ```

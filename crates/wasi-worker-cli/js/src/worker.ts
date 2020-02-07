@@ -50,7 +50,7 @@ const startWasiTask = async (file: string) => {
 
     // Instantiate the WebAssembly file
     instance = await WebAssembly.instantiate(module, {
-      wasi_unstable: wasi.wasiImport
+      wasi_snapshot_preview1: wasi.wasiImport
     });
 
     // Start the WebAssembly WASI instance!

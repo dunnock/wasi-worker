@@ -3,7 +3,7 @@ name = "wasi-worker-yew"
 version = "0.4.1"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
-license = "MIT"
+license = "MIT/APACHE-2.0"
 description = "WASM/WASI browser service worker for yew (Agent<Reach=Public>)"
 readme = "README.md"
 keywords = ["wasi", "wasm", "worker", "yew", "agent"]
@@ -13,6 +13,6 @@ repository = "https://github.com/dunnock/wasi-worker/tree/master/crates/wasi-wor
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wasi-worker = { path = "../..", version = "0.4" }
+wasi-worker = { path = "../..", version = "0.5" }
 yew = "0.10"
 anymap = "0.12"

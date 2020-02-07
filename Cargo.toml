@@ -1,9 +1,9 @@
 [package]
 name = "wasi-worker"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
-license = "MIT"
+license = "MIT/APACHE-2.0"
 description = "WASM/WASI interface for browser service workers"
 readme = "README.md"
 keywords = ["wasi", "wasm", "browser", "service", "worker"]

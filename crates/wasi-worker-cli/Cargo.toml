@@ -1,5 +1,5 @@
 [package]
-version = "0.4.5"
+version = "0.5.0"
 name = "wasi-worker-cli"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 categories = [
@@ -17,7 +17,7 @@ keywords = [
     "wasm",
     "worker",
 ]
-license = "MIT"
+license = "MIT/APACHE-2.0"
 readme = "README.md"
 repository = "https://github.com/dunnock/wasi-worker/tree/master/wasi-worker-cli"
 exclude = ["js/src", "js/*.json", "js/*.js"]

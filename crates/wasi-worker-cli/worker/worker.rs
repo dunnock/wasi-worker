@@ -36,12 +36,3 @@ fn main() {
    * ```
    */
 }
-
-// this function will be called from worker.js when it receives message
-// In the future it will be substituted by poll_oneoff or thread::yield, 
-// though currently poll_oneoff does not return control to browser
-#[no_mangle]
-pub extern "C" fn message_ready() -> usize {
-  ServiceWorker::on_message()
-    .expect("ServiceWorker.on_message")
-}
