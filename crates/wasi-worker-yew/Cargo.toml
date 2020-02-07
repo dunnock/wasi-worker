@@ -3,7 +3,7 @@ name = "wasi-worker-yew"
 version = "0.4.1"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
-license = "MIT/APACHE-2.0"
+license = "MIT/Apache-2.0"
 description = "WASM/WASI browser service worker for yew (Agent<Reach=Public>)"
 readme = "README.md"
 keywords = ["wasi", "wasm", "worker", "yew", "agent"]
