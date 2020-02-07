@@ -36,13 +36,6 @@ fn main() {
   // Send binary message to main browser application
   ServiceWorker::post_message(b"message");
 }
-
-// Function will be called from JS on incoming message
-#[no_mangle]
-pub extern "C" fn message_ready() -> usize {
-  ServiceWorker::on_message()
-    .expect("ServiceWorker.on_message")
-}
 ```
 
 
