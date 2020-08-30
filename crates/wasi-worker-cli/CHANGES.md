@@ -1,3 +1,11 @@
+# 0.6.0
+
+## CHANGES
+
+- upgraded @wasmer js to 0.11
+- fixed compatibility with latest Rust wasm specification
+- upgraded rollup and plugins to version 2
+
 # 0.5.0
 
 ## CHANGES

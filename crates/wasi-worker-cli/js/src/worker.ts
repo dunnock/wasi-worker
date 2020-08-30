@@ -1,4 +1,5 @@
 import WASI from  "@wasmer/wasi";
+import wasiBindings from "@wasmer/wasi/lib/bindings/browser";
 import { lowerI64Imports } from "@wasmer/wasm-transformer";
 import { WorkerFS } from './fs';
 
@@ -18,7 +19,8 @@ let wasi = new WASI({
   args: [],
   env: {},
   bindings: {
-    ...WASI.defaultBindings,
+    // @ts-ignore
+    ...wasiBindings.default,
     fs: workerFs.getFs()
   }
 });
@@ -31,7 +33,7 @@ const fetchAndTransformWasmBinary = async (url: string) => {
   const originalWasmBinary = new Uint8Array(originalWasmBinaryBuffer);
 
   // Initialize our wasm-transformer
-  //  await wasmTransformerInit(wasmTransformerUrl); 
+  //  await wasmTransformerInit(wasmTransformerUrl);
   // IMPORTANT: This URL points to wherever the wasm-transformer.wasm is hosted
 
   // Transform the binary, by running the lower_i64_imports from the wasm-transformer

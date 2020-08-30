@@ -1,11 +1,13 @@
 {
   "include": [
-    "src/*"
-    ],
+    "src/*.ts"
+  ],
   "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
     "moduleResolution": "node",
     "target": "es5",
-    "lib": ["esnext", "dom"],
+    "lib": ["webworker"],
     "strict": true,
     "sourceMap": true,
     "declaration": true,
@@ -14,7 +16,6 @@
     "emitDecoratorMetadata": true,
     "downlevelIteration": true,
     "declarationDir": "dist/types",
-    "outDir": "dist/",
     "jsx": "react",
     "jsxFactory": "h",
     "typeRoots": ["node_modules/@types"],

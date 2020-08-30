@@ -16,9 +16,9 @@ export class WorkerFS {
 
     this.stdin = new BufferedStdin();
     this.stdin.bindToFd(this.wasmFs.volume.fds[0]);
-    
+
     this.stdout = new PipedWriter(this.wasmFs.volume.fds[1]);
-    
+
     this.stderr = new PipedWriter(this.wasmFs.volume.fds[2]);
     this.stderr.mapStrFn((str) => console.error("worker error>" + str))
 
@@ -56,9 +56,9 @@ class PipedWriter {
       this.binFn(stdoutBuffer);
       return stdoutBuffer.length;
     }
-  
+
     let dataString = new TextDecoder("utf-8").decode(stdoutBuffer);
-    
+
     if(this.strFn) {
       this.strFn(dataString);
     } else {
