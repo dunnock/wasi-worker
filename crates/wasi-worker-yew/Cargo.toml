@@ -1,6 +1,6 @@
 [package]
 name = "wasi-worker-yew"
-version = "0.5.2"
+version = "0.6.0"
 authors = ["Maksym Vorobiov <maxim.vorobjov@gmail.com>"]
 edition = "2018"
 license = "MIT/Apache-2.0"
@@ -14,5 +14,6 @@ repository = "https://github.com/dunnock/wasi-worker/tree/master/crates/wasi-wor
 
 [dependencies]
 wasi-worker = { path = "../..", version = "0.5" }
-yew = "0.11"
+yew = "0.16"
 anymap = "0.12"
+serde = { version = "1.0", features = ["derive"] }

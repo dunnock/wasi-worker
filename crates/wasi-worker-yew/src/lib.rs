@@ -18,7 +18,7 @@
 //!     type Output = String;
 //!     fn create(_link: AgentLink<Self>) -> Self { MyAgent { } }
 //!     fn update(&mut self, _msg: Self::Message) { /* ... */ }
-//!     fn handle(&mut self, _msg: Self::Input, _who: HandlerId) { /* */ }
+//!     fn handle_input(&mut self, _msg: Self::Input, _who: HandlerId) { /* */ }
 //!     // link to the JavaScript runner, worker instantiated from:
 //!     fn name_of_resource() -> &'static str { "worker.js" }
 //! };
@@ -33,11 +33,36 @@
 //! ```
 
 pub use wasi_worker::{FileOptions, ServiceOptions, ServiceWorker};
-pub use yew::agent::{Agent, AgentLink, FromWorker, HandlerId, Packed, Public, ToWorker};
+pub use yew::agent::{Agent, AgentLink, HandlerId, Packed, Public};
 
 use std::io;
 use wasi_worker::Handler;
 use yew::agent::{AgentScope, AgentLifecycleEvent, Responder};
+use serde::{Serialize, Deserialize};
+
+/// Serializable messages to worker
+/// Enum copied from yew:0.17 so can be intercepted locally
+#[derive(Serialize, Deserialize, Debug)]
+enum ToWorker<T> {
+    /// Client is connected
+    Connected(HandlerId),
+    /// Incoming message to Worker
+    ProcessInput(HandlerId, T),
+    /// Client is disconnected
+    Disconnected(HandlerId),
+    /// Worker should be terminated
+    Destroy,
+}
+
+/// Serializable messages sent by worker to consumer
+/// Enum copied from yew:0.17 so can be intercepted locally
+#[derive(Serialize, Deserialize, Debug)]
+enum FromWorker<T> {
+    /// Worker sends this message when `wasm` bundle has loaded.
+    WorkerLoaded,
+    /// Outgoing message to consumer
+    ProcessOutput(HandlerId, T),
+}
 
 /// WASIAgent is the main executor and communication bridge for yew Agent with Reach = Public
 pub struct WASIAgent<T: Agent<Reach = Public>> {
