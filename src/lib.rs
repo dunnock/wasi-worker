@@ -1,5 +1,5 @@
 //!  This crate provides rust library to easily compose WASM/WASI browser service worker.
-//!  
+//!
 //!  # General overview
 //!
 //!  ServiceWorker is a singleton which holds input and output file handles and
